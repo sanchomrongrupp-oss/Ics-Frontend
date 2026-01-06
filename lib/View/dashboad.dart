@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ics_frontend/Moon/switchmode.dart';
-import 'package:ics_frontend/View/Dashboard_Main_Conten/dash_content.dart';
+import 'package:ics_frontend/View/Dashboard/dash_content.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -18,7 +18,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Theme(
       data: _isDark ? ThemeData.dark() : ThemeData.light(),
       child: Builder(builder: (context) {
-       final _ = Theme.of(context);
+       final theme = Theme.of(context);
       return Scaffold(
         backgroundColor: Colors.grey[200],
         body: SafeArea(
@@ -27,7 +27,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             child: Row(
             children: [
               Card(
-                color: Colors.white,
+                color: theme.cardColor,
                 child:SizedBox(
                   width: 300,
                   height: double.infinity,
@@ -76,7 +76,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 child: Column(
                   children: [
                     Card(
-                      color: Colors.white,
+                      color: theme.cardColor,
                       child: SizedBox(
                         width: double.infinity,
                         height: 100,
@@ -240,7 +240,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget customListTile({required Widget icon, required String title, required VoidCallback onTap}) {
     return ListTile(
       leading: icon,
-      title: Text(title),
+      title: Text(title, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),),
       onTap: onTap,
     );
   }

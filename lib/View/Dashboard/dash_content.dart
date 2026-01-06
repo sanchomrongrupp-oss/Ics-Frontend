@@ -19,30 +19,227 @@ class _DashContentState extends State<DashContent> {
       ),
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Dashboard Overview',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: theme.textTheme.titleLarge?.color,
-              ),
-            ),
-            const Divider(),
-            const Expanded(
-              child: Center(
-                child: Text(
-                  'Your Main Content (Tables, Graphs, etc.) Goes Here',
-                  style: TextStyle(fontSize: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CustomBoxProducts(
+                  "Total Products",
+                  "150",
+                  "icons/product.png",
+                  Color.fromARGB(255, 114, 180, 255),
                 ),
-              ),
+                CustomBoxProducts(
+                  "Total Stock",
+                  "124045",
+                  "icons/total_product.png",
+                  Color(0xFFFFF3E0),
+                ),
+                CustomBoxProducts(
+                  "Low Stock",
+                  "10",
+                  "icons/low_stock.png",
+                  Color(0xFFFFEBEE),
+                ),
+                CustomBoxProducts(
+                  "Out of Stock",
+                  "5",
+                  "icons/out_of_stock.png",
+                  Color.fromARGB(255, 255, 89, 89),
+                ),
+                TodayStockInOut(
+                  "Today's Stock In",
+                  "500",
+                  "icons/stock_up.png",
+                  "Today's Stock Out",
+                  "300",
+                  "icons/stock_down.png",
+                )
+
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                CustomChatdiagramProductLabel("Electronics"),
+                SizedBox(width: 20),
+                CustomChatdiagramProductLabel("Clothing"),
+                SizedBox(width: 20),
+                CustomChatdiagramProductLabel("Home Appliances"),
+                SizedBox(width: 20),
+                CustomChatdiagramProductLabel("Books"),
+              ],
             ),
           ],
         ),
       )
+    );
+  }
+  Widget CustomBoxProducts(String title, String count, String iconPath, Color color) {
+    return Card(
+      color: color,
+      elevation: 2, // Added a little shadow for better look
+      child: Container(
+        width: 250,
+        height: 117,
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      count,
+                      style: const TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(width: 10),
+                ImageIcon(
+                  AssetImage(iconPath),
+                  size: 80,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  //Today stock in and out
+  Widget TodayStockInOut(String titlein, String countin, String iconPathin, String titleout, String countout, String iconPathout) {
+    return Card(
+      elevation: 2,
+      child: Container(
+        width: 450,
+        height: 117,
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                       Text(
+                        titlein,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                       Row(
+                         children: [
+                          Text(
+                            countin,
+                            style: TextStyle(
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(width: 50),
+                          ImageIcon(
+                            AssetImage(iconPathin),
+                              size: 50,
+                              color: Colors.green,
+                            ),
+                         ],
+                       ),
+                    ],
+                  ),
+                ),
+                SizedBox(width: 40),
+                SizedBox(
+                  height: 97,
+                  width: 1,
+                  child: Container(
+                    color: Colors.grey,
+                  )
+                ),
+                SizedBox(width: 40),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                       Text(
+                        titleout,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                       Row(
+                         children: [
+                           Text(
+                            countout,
+                            style: TextStyle(
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(width: 50),
+                          ImageIcon(
+                            AssetImage(iconPathout),
+                            size: 50,
+                            color: Colors.red,
+                          ),
+                         ],
+                       ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  //Widget chat product label
+  Widget CustomChatdiagramProductLabel(String label) {
+    return Row(
+      children: [
+        Container(
+          width: 12,
+          height: 12,
+          decoration: BoxDecoration(
+            color: Colors.blue,
+            borderRadius: BorderRadius.circular(6),
+          ),
+        ),
+        SizedBox(width: 8),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 16,
+          ),
+        ),
+      ],
     );
   }
 }
