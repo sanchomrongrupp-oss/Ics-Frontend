@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:ics_frontend/View/Dashboard/alert.dart';
+import 'package:ics_frontend/View/Dashboard/chatdiagram.dart';
+import 'package:ics_frontend/View/Dashboard/stockstatus.dart';
 
 class DashContent extends StatefulWidget {
   const DashContent({super.key});
@@ -14,9 +17,7 @@ class _DashContentState extends State<DashContent> {
     return Card(
       color: theme.cardColor,
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.all(8.0),
@@ -36,13 +37,13 @@ class _DashContentState extends State<DashContent> {
                   "Total Stock",
                   "124045",
                   "icons/total_product.png",
-                  Color(0xFFFFF3E0),
+                  Color.fromARGB(255, 14, 184, 22),
                 ),
                 CustomBoxProducts(
                   "Low Stock",
                   "10",
                   "icons/low_stock.png",
-                  Color(0xFFFFEBEE),
+                  Color.fromARGB(255, 230, 169, 40),
                 ),
                 CustomBoxProducts(
                   "Out of Stock",
@@ -57,28 +58,62 @@ class _DashContentState extends State<DashContent> {
                   "Today's Stock Out",
                   "300",
                   "icons/stock_down.png",
-                )
-
+                ),
               ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                CustomChatdiagramProductLabel("Electronics"),
-                SizedBox(width: 20),
-                CustomChatdiagramProductLabel("Clothing"),
-                SizedBox(width: 20),
-                CustomChatdiagramProductLabel("Home Appliances"),
-                SizedBox(width: 20),
-                CustomChatdiagramProductLabel("Books"),
+                Expanded(
+                  flex: 2,
+                  child: Card(
+                    elevation: 4,
+                    color: Colors.white,
+                    child: SizedBox(height: 400, 
+                    child: Chatdiagram(),),
+                  ),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Card(
+                    elevation: 4,
+                    color: Colors.white,
+                    child: SizedBox(
+                      height: 400,
+                      child: StockStatusChart(),
+                    ),
+                  )
+                )
               ],
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: Card(
+                    elevation: 4,
+                    color: Colors.white,
+                    child: SizedBox(
+                      height: 300,
+                      child: Alert(),
+                    ),
+                  )
+                )
+              ],
+            )
           ],
         ),
-      )
+      ),
     );
   }
-  Widget CustomBoxProducts(String title, String count, String iconPath, Color color) {
+
+  Widget CustomBoxProducts(
+    String title,
+    String count,
+    String iconPath,
+    Color color,
+  ) {
     return Card(
       color: color,
       elevation: 2, // Added a little shadow for better look
@@ -113,11 +148,7 @@ class _DashContentState extends State<DashContent> {
                   ],
                 ),
                 SizedBox(width: 10),
-                ImageIcon(
-                  AssetImage(iconPath),
-                  size: 80,
-                  color: Theme.of(context).primaryColor,
-                ),
+                ImageIcon(AssetImage(iconPath), size: 80, color: Colors.black),
               ],
             ),
           ],
@@ -127,7 +158,14 @@ class _DashContentState extends State<DashContent> {
   }
 
   //Today stock in and out
-  Widget TodayStockInOut(String titlein, String countin, String iconPathin, String titleout, String countout, String iconPathout) {
+  Widget TodayStockInOut(
+    String titlein,
+    String countin,
+    String iconPathin,
+    String titleout,
+    String countout,
+    String iconPathout,
+  ) {
     return Card(
       elevation: 2,
       child: Container(
@@ -143,7 +181,7 @@ class _DashContentState extends State<DashContent> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                       Text(
+                      Text(
                         titlein,
                         style: TextStyle(
                           fontSize: 20,
@@ -151,8 +189,8 @@ class _DashContentState extends State<DashContent> {
                         ),
                       ),
                       SizedBox(height: 10),
-                       Row(
-                         children: [
+                      Row(
+                        children: [
                           Text(
                             countin,
                             style: TextStyle(
@@ -163,11 +201,11 @@ class _DashContentState extends State<DashContent> {
                           SizedBox(width: 50),
                           ImageIcon(
                             AssetImage(iconPathin),
-                              size: 50,
-                              color: Colors.green,
-                            ),
-                         ],
-                       ),
+                            size: 50,
+                            color: Colors.green,
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -175,16 +213,14 @@ class _DashContentState extends State<DashContent> {
                 SizedBox(
                   height: 97,
                   width: 1,
-                  child: Container(
-                    color: Colors.grey,
-                  )
+                  child: Container(color: Colors.grey),
                 ),
                 SizedBox(width: 40),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                       Text(
+                      Text(
                         titleout,
                         style: TextStyle(
                           fontSize: 20,
@@ -192,9 +228,9 @@ class _DashContentState extends State<DashContent> {
                         ),
                       ),
                       SizedBox(height: 10),
-                       Row(
-                         children: [
-                           Text(
+                      Row(
+                        children: [
+                          Text(
                             countout,
                             style: TextStyle(
                               fontSize: 30,
@@ -207,8 +243,8 @@ class _DashContentState extends State<DashContent> {
                             size: 50,
                             color: Colors.red,
                           ),
-                         ],
-                       ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -233,12 +269,7 @@ class _DashContentState extends State<DashContent> {
           ),
         ),
         SizedBox(width: 8),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 16,
-          ),
-        ),
+        Text(label, style: TextStyle(fontSize: 16)),
       ],
     );
   }
