@@ -28,13 +28,17 @@ class _LoginScreenState extends State<LoginScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Text("Log In",
-                                style: TextStyle(
-                                    fontSize:28, fontWeight: FontWeight.w600)),
+                            Text(
+                              "Log In",
+                              style: TextStyle(
+                                fontSize: 28,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                           ],
                         ),
                         const SizedBox(height: 50),
-                        
+
                         emailTextField(),
                         const SizedBox(height: 20),
 
@@ -62,16 +66,16 @@ class _LoginScreenState extends State<LoginScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Text( 'Your Username',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+            Text(
+              'Your Username',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            ),
           ],
         ),
         SizedBox(height: 8),
         TextField(
           decoration: InputDecoration(
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
           ),
         ),
       ],
@@ -85,17 +89,17 @@ class _LoginScreenState extends State<LoginScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Text( 'Your Password',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+            Text(
+              'Your Password',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            ),
           ],
         ),
         SizedBox(height: 8),
         TextField(
           obscureText: true,
           decoration: InputDecoration(
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
           ),
         ),
       ],
@@ -108,19 +112,18 @@ class _LoginScreenState extends State<LoginScreen> {
       style: ElevatedButton.styleFrom(
         minimumSize: const Size(200, 75),
         backgroundColor: Colors.blue,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(35),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(35)),
       ),
       onPressed: () {
         Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: (context) => const DashboardScreen(),
-          ),
+          MaterialPageRoute(builder: (context) => const DashboardScreen()),
         );
       },
-      child: Text(text,style: const TextStyle(fontSize: 22, color: Colors.white),),
+      child: Text(
+        text,
+        style: const TextStyle(fontSize: 22, color: Colors.white),
+      ),
     );
   }
 }

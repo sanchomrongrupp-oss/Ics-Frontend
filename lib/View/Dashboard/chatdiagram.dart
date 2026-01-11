@@ -18,7 +18,9 @@ class Chatdiagram extends StatefulWidget {
 
   final Color leftBarColor = AppColors.contentColorGreen;
   final Color rightBarColor = AppColors.contentColorRed;
-  final Color avgColor = AppColors.contentColorGreen.avg(AppColors.contentColorRed);
+  final Color avgColor = AppColors.contentColorGreen.avg(
+    AppColors.contentColorRed,
+  );
 
   @override
   State<StatefulWidget> createState() => ChatdiagramState();
@@ -65,15 +67,26 @@ class ChatdiagramState extends State<Chatdiagram> {
                   children: [
                     const Text(
                       'Stock In Vs Stock Out',
-                      style: TextStyle(color: Colors.black, fontSize: 22, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     Row(
                       children: [
                         const Text(
                           'Monthly Overview',
-                          style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                        IconButton(onPressed: (){}, icon: Icon(Icons.arrow_drop_down))
+                        IconButton(
+                          onPressed: () {},
+                          icon: Icon(Icons.arrow_drop_down),
+                        ),
                       ],
                     ),
                   ],
@@ -88,7 +101,8 @@ class ChatdiagramState extends State<Chatdiagram> {
                   barTouchData: BarTouchData(
                     touchTooltipData: BarTouchTooltipData(
                       getTooltipColor: (group) => Colors.blueGrey,
-                      getTooltipItem: (a, b, c, d) => null, // Keeps tooltips hidden as per your original code
+                      getTooltipItem: (a, b, c, d) =>
+                          null, // Keeps tooltips hidden as per your original code
                     ),
                     touchCallback: (FlTouchEvent event, response) {
                       if (response == null || response.spot == null) {
@@ -112,24 +126,40 @@ class ChatdiagramState extends State<Chatdiagram> {
                         showingBarGroups = List.of(rawBarGroups);
                         if (touchedGroupIndex != -1) {
                           var sum = 0.0;
-                          for (final rod in showingBarGroups[touchedGroupIndex].barRods) {
+                          for (final rod
+                              in showingBarGroups[touchedGroupIndex].barRods) {
                             sum += rod.toY;
                           }
-                          final avg = sum / showingBarGroups[touchedGroupIndex].barRods.length;
+                          final avg =
+                              sum /
+                              showingBarGroups[touchedGroupIndex]
+                                  .barRods
+                                  .length;
 
-                          showingBarGroups[touchedGroupIndex] = showingBarGroups[touchedGroupIndex].copyWith(
-                            barRods: showingBarGroups[touchedGroupIndex].barRods.map((rod) {
-                              return rod.copyWith(toY: avg, color: widget.avgColor);
-                            }).toList(),
-                          );
+                          showingBarGroups[touchedGroupIndex] =
+                              showingBarGroups[touchedGroupIndex].copyWith(
+                                barRods: showingBarGroups[touchedGroupIndex]
+                                    .barRods
+                                    .map((rod) {
+                                      return rod.copyWith(
+                                        toY: avg,
+                                        color: widget.avgColor,
+                                      );
+                                    })
+                                    .toList(),
+                              );
                         }
                       });
                     },
                   ),
                   titlesData: FlTitlesData(
                     show: true,
-                    rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                    topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                    rightTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    topTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
                     bottomTitles: AxisTitles(
                       sideTitles: SideTitles(
                         showTitles: true,
@@ -159,26 +189,42 @@ class ChatdiagramState extends State<Chatdiagram> {
   }
 
   Widget leftTitles(double value, TitleMeta meta) {
-    const style = TextStyle(color: Color(0xff7589a2), fontWeight: FontWeight.bold, fontSize: 12);
+    const style = TextStyle(
+      color: Color(0xff7589a2),
+      fontWeight: FontWeight.bold,
+      fontSize: 12,
+    );
     String text = '';
-    if (value == 0) text = '1K';
-    else if (value == 10) text = '5K';
-    else if (value == 19) text = '10K';
-    else return Container();
+    if (value == 0) {
+      text = '1K';
+    } else if (value == 10)
+      text = '5K';
+    else if (value == 19)
+      text = '10K';
+    else
+      return Container();
 
-    return SideTitleWidget(meta: meta, space: 0, child: Text(text, style: style));
+    return SideTitleWidget(
+      meta: meta,
+      space: 0,
+      child: Text(text, style: style),
+    );
   }
 
   Widget bottomTitles(double value, TitleMeta meta) {
     final titles = <String>['Mn', 'Te', 'Wd', 'Tu', 'Fr', 'St', 'Su'];
     if (value.toInt() >= titles.length) return Container();
-    
+
     return SideTitleWidget(
       meta: meta,
       space: 16,
       child: Text(
         titles[value.toInt()],
-        style: const TextStyle(color: Color(0xff7589a2), fontWeight: FontWeight.bold, fontSize: 14),
+        style: const TextStyle(
+          color: Color(0xff7589a2),
+          fontWeight: FontWeight.bold,
+          fontSize: 14,
+        ),
       ),
     );
   }
@@ -217,7 +263,9 @@ class ChatdiagramState extends State<Chatdiagram> {
     return Container(
       width: width,
       height: height,
-      color: Colors.black.withOpacity(opacity), // Changed to black for visibility on white background
+      color: Colors.black.withOpacity(
+        opacity,
+      ), // Changed to black for visibility on white background
     );
   }
 }

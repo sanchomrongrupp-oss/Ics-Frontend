@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ics_frontend/View/Dashboard/dash_content.dart';
+import 'package:ics_frontend/View/login.dart';
 
 // Note: Ensure your assets are defined in pubspec.yaml
 // and your imports for DashContent and CustomLightModeSwitch are correct.
@@ -55,14 +56,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
               // --- MAIN CONTENT ---
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 16.0,right: 16.0,bottom: 16.0),
+                  padding: const EdgeInsets.only(
+                    top: 16.0,
+                    right: 16.0,
+                    bottom: 16.0,
+                  ),
                   child: Column(
                     children: [
                       _buildTopHeader(theme),
-                      SizedBox(
-                        height: 16,
-                      ),
-                      DashContent()
+                      SizedBox(height: 16),
+                      DashContent(),
                     ],
                   ),
                 ),
@@ -96,29 +99,40 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
             const Text(
               "Control System",
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, letterSpacing: 1.2),
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                letterSpacing: 1.2,
+              ),
             ),
             const SizedBox(height: 40),
-            
+
             // Sidebar Navigation Items
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 children: [
-                  _navTile(iconPath: 'icons/dashboard.png', title: 'Dashboard', isActive: true),
-                  SizedBox(height: 10,),
-                  _navTile(iconPath: 'icons/inventorys.png', title: 'Inventory'),
-                  SizedBox(height: 10,),
+                  _navTile(
+                    iconPath: 'icons/dashboard.png',
+                    title: 'Dashboard',
+                    isActive: true,
+                  ),
+                  SizedBox(height: 10),
+                  _navTile(
+                    iconPath: 'icons/inventorys.png',
+                    title: 'Inventory',
+                  ),
+                  SizedBox(height: 10),
                   _navTile(iconPath: 'icons/office.png', title: 'Office'),
-                  SizedBox(height: 10,),
+                  SizedBox(height: 10),
                   _navTile(iconPath: 'icons/brands.png', title: 'Brands'),
-                  SizedBox(height: 10,),
+                  SizedBox(height: 10),
                   _navTile(iconPath: 'icons/towuser.png', title: 'Employees'),
-                  SizedBox(height: 10,),
+                  SizedBox(height: 10),
                   _navTile(iconPath: 'icons/finances.png', title: 'Finances'),
-                  SizedBox(height: 10,),
+                  SizedBox(height: 10),
                   _navTile(iconPath: 'icons/sale.png', title: 'Sale'),
-                  SizedBox(height: 10,),
+                  SizedBox(height: 10),
                   _navTile(iconPath: 'icons/settings.png', title: 'Settings'),
                 ],
               ),
@@ -128,7 +142,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
             Padding(
               padding: const EdgeInsets.only(bottom: 20),
               child: ListTile(
-                title: Text(_isDark ? "Dark Mode" : "Light Mode", style: const TextStyle(fontSize: 14)),
+                title: Text(
+                  _isDark ? "Dark Mode" : "Light Mode",
+                  style: const TextStyle(fontSize: 14),
+                ),
                 trailing: Switch(
                   value: _isDark,
                   onChanged: (val) => setState(() => _isDark = val),
@@ -155,26 +172,35 @@ class _DashboardScreenState extends State<DashboardScreen> {
             Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.grey.withOpacity(0.3), width: 2),
+                border: Border.all(
+                  color: Colors.grey.withOpacity(0.3),
+                  width: 2,
+                ),
               ),
               child: const CircleAvatar(
                 radius: 22,
                 backgroundColor: Colors.white,
-                child: 
-                Image(image: AssetImage('icons/dog.png')) , 
+                child: Image(image: AssetImage('icons/dog.png')),
               ),
             ),
             const SizedBox(width: 45),
 
             // Action Icons (Responsive spacing)
-            _headerIconButton('icons/bell.png', hasBadge: true),
+            _headerIconButton(
+              onTap: () {},
+              assetPath: 'icons/bell.png',
+              hasBadge: true,
+            ),
             const SizedBox(width: 30),
-            _headerIconButton('icons/message.png', hasBadge: true),
+            _headerIconButton(
+              onTap: () {},
+              assetPath: 'icons/message.png',
+              hasBadge: true,
+            ),
             const SizedBox(width: 30),
-            _headerIconButton('icons/calendar.png'),
-            
-            const Spacer(), // Pushes search bar to the right
+            _headerIconButton(onTap: () {}, assetPath: 'icons/calendar.png'),
 
+            const Spacer(), // Pushes search bar to the right
             // Search Bar
             Expanded(
               flex: 2,
@@ -189,8 +215,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     hintText: "Search",
                     hintStyle: const TextStyle(fontSize: 14),
                     prefixIcon: Padding(
-                      padding: const EdgeInsets.all(4.0), // Adjust padding to "shrink" the icon
-                      child: _headerIconButton('icons/search.png')
+                      padding: const EdgeInsets.all(
+                        4.0,
+                      ), // Adjust padding to "shrink" the icon
+                      child: _headerIconButton(
+                        onTap: () {},
+                        assetPath: 'icons/search.png',
+                      ),
                     ),
                     border: InputBorder.none,
                     contentPadding: const EdgeInsets.symmetric(vertical: 10),
@@ -200,7 +231,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
 
             const SizedBox(width: 30),
-            _headerIconButton('icons/logout.png', color: Colors.redAccent),
+            _headerIconButton(
+              onTap: () {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                  (Route<dynamic> route) => false,
+                );
+              },
+              assetPath: 'icons/logout.png',
+              color: Colors.redAccent,
+            ),
           ],
         ),
       ),
@@ -209,60 +250,66 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   // --- Helper: Nav Tiles ---
   Widget _navTile({
-  required String iconPath, 
-  required String title, 
-  bool isActive = false,
-}) {
-  Color? iconColor;
-  if(isActive){
-    iconColor = Colors.blue;
-  }else{
-    iconColor = _isDark ? Colors.white : Colors.black87;
-  }
-  return Container(
-    margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-    decoration: BoxDecoration(
-      // Highlight background if active
-      color: isActive ? Colors.blue.withOpacity(0.12) : Colors.transparent,
-      borderRadius: BorderRadius.circular(10),
-    ),
-    child: ListTile(
-      // Check if icon is IconData (Icons.home) or a Widget (Image.asset)
-      leading: Image.asset(
+    required String iconPath,
+    required String title,
+    bool isActive = false,
+  }) {
+    Color? iconColor;
+    if (isActive) {
+      iconColor = Colors.blue;
+    } else {
+      iconColor = _isDark ? Colors.white : Colors.black87;
+    }
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      decoration: BoxDecoration(
+        // Highlight background if active
+        color: isActive ? Colors.blue.withOpacity(0.12) : Colors.transparent,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: ListTile(
+        // Check if icon is IconData (Icons.home) or a Widget (Image.asset)
+        leading: Image.asset(
           iconPath,
           width: 22,
           height: 22,
           color: iconColor, // This makes the image white in dark mode
           colorBlendMode: BlendMode.srcIn,
         ),
-      title: Text(
-        title,
-        style: TextStyle(
-          fontSize: 15,
-          fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
-          color: isActive ? Colors.blue : null,
+        title: Text(
+          title,
+          style: TextStyle(
+            fontSize: 15,
+            fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
+            color: isActive ? Colors.blue : null,
+          ),
         ),
+        onTap: () {
+          // Handle navigation here
+        },
+        dense: true,
+        horizontalTitleGap: 12, // Brings the text closer to the icon
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
-      onTap: () {
-        // Handle navigation here
-      },
-      dense: true,
-      horizontalTitleGap: 12, // Brings the text closer to the icon
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-    ),
-  );
-}
+    );
+  }
 
   // --- Helper: Header Buttons ---
-  Widget _headerIconButton(String assetPath, {bool hasBadge = false, Color? color}) {
+  Widget _headerIconButton({
+    required VoidCallback onTap,
+    required String assetPath,
+    bool hasBadge = false,
+    Color? color,
+  }) {
     final Color finalColor = color ?? (_isDark ? Colors.white : Colors.black87);
-  return Stack(
-    clipBehavior: Clip.none, // Allows the badge to sit slightly outside the button bounds
-    children: [
-      IconButton(
-        onPressed: () {},
-        // Check if input is IconData (e.g. Icons.home) or a Widget (e.g. Image.asset)
-        icon: Image.asset(
+    return Stack(
+      clipBehavior: Clip
+          .none, // Allows the badge to sit slightly outside the button bounds
+      children: [
+        IconButton(
+          onPressed: onTap,
+          // Check if input is IconData (e.g. Icons.home) or a Widget (e.g. Image.asset)
+          icon: Image.asset(
             assetPath,
             width: 24,
             height: 24,
@@ -271,25 +318,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
           visualDensity: VisualDensity.compact,
         ),
-      if (hasBadge)
-        Positioned(
-          right: 4, // Adjusted for better visual alignment
-          top: 4,
-          child: Container(
-            padding: const EdgeInsets.all(2),
-            decoration: BoxDecoration(
-              color: Colors.red,
-              shape: BoxShape.circle,
-              // Added a small white border to make the badge pop against icons
-              border: Border.all(color: Colors.white, width: 1.5),
-            ),
-            constraints: const BoxConstraints(
-              minWidth: 10,
-              minHeight: 10,
+        if (hasBadge)
+          Positioned(
+            right: 4, // Adjusted for better visual alignment
+            top: 4,
+            child: Container(
+              padding: const EdgeInsets.all(2),
+              decoration: BoxDecoration(
+                color: Colors.red,
+                shape: BoxShape.circle,
+                // Added a small white border to make the badge pop against icons
+                border: Border.all(color: Colors.white, width: 1.5),
+              ),
+              constraints: const BoxConstraints(minWidth: 10, minHeight: 10),
             ),
           ),
-        ),
-    ],
-  );
-}
+      ],
+    );
+  }
 }
