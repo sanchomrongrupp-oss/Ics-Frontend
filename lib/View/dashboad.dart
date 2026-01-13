@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ics_frontend/View/Dashboard/dash_content.dart';
+import 'package:ics_frontend/View/Inventory/stockinformation.dart';
 import 'package:ics_frontend/View/login.dart';
 
 // Note: Ensure your assets are defined in pubspec.yaml
@@ -14,6 +15,14 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   bool _isDark = false;
+
+  late Widget _currentContent;
+  @override
+  void initState() {
+    super.initState();
+    // Set default content to Dashboard
+    _currentContent = const DashContent();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +74,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     children: [
                       _buildTopHeader(theme),
                       SizedBox(height: 16),
-                      DashContent(),
+                      _currentContent,
                     ],
                   ),
                 ),
@@ -115,25 +124,68 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   _navTile(
                     iconPath: 'icons/dashboard.png',
                     title: 'Dashboard',
-                    isActive: true,
+                    isActive: _currentContent is DashContent,
+                    onTap: () {
+                      setState(() {
+                        _currentContent = const DashContent();
+                      });
+                    },
+                  ),
+                  SizedBox(height: 10),
+                  _navExpansionTile(
+                    iconPath: 'icons/inventorys.png',
+                    title: 'Inventory',
+                    isDark: _isDark,
+                    children: [
+                      _subTile(
+                        title: "Stock Informations",
+                        onTap: () {
+                          setState(() {
+                            _currentContent = const StockInformation();
+                          });
+                        },
+                      ),
+                      _subTile(title: "Purchase Orders", onTap: () {}),
+                      _subTile(title: "Inventory Adjustment", onTap: () {}),
+                      _subTile(title: "Inventory Count Stock", onTap: () {}),
+                    ],
                   ),
                   SizedBox(height: 10),
                   _navTile(
-                    iconPath: 'icons/inventorys.png',
-                    title: 'Inventory',
+                    iconPath: 'icons/office.png',
+                    title: 'Office',
+                    onTap: () {},
                   ),
                   SizedBox(height: 10),
-                  _navTile(iconPath: 'icons/office.png', title: 'Office'),
+                  _navTile(
+                    iconPath: 'icons/brands.png',
+                    title: 'Brands',
+                    onTap: () {},
+                  ),
                   SizedBox(height: 10),
-                  _navTile(iconPath: 'icons/brands.png', title: 'Brands'),
+                  _navTile(
+                    iconPath: 'icons/towuser.png',
+                    title: 'Employees',
+                    onTap: () {},
+                  ),
                   SizedBox(height: 10),
-                  _navTile(iconPath: 'icons/towuser.png', title: 'Employees'),
+                  _navTile(
+                    iconPath: 'icons/finances.png',
+                    title: 'Finances',
+                    onTap: () {},
+                  ),
                   SizedBox(height: 10),
-                  _navTile(iconPath: 'icons/finances.png', title: 'Finances'),
+                  _navTile(
+                    iconPath: 'icons/sale.png',
+                    title: 'Sale',
+                    onTap: () {},
+                  ),
                   SizedBox(height: 10),
-                  _navTile(iconPath: 'icons/sale.png', title: 'Sale'),
-                  SizedBox(height: 10),
-                  _navTile(iconPath: 'icons/settings.png', title: 'Settings'),
+                  _navTile(
+                    iconPath: 'icons/settings.png',
+                    title: 'Settings',
+                    onTap: () {},
+                  ),
                 ],
               ),
             ),
@@ -250,6 +302,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   // --- Helper: Nav Tiles ---
   Widget _navTile({
+    required VoidCallback onTap,
     required String iconPath,
     required String title,
     bool isActive = false,
@@ -268,6 +321,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         borderRadius: BorderRadius.circular(10),
       ),
       child: ListTile(
+        onTap: onTap,
         // Check if icon is IconData (Icons.home) or a Widget (Image.asset)
         leading: Image.asset(
           iconPath,
@@ -284,9 +338,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
             color: isActive ? Colors.blue : null,
           ),
         ),
-        onTap: () {
-          // Handle navigation here
-        },
         dense: true,
         horizontalTitleGap: 12, // Brings the text closer to the icon
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -334,6 +385,65 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
           ),
       ],
+    );
+  }
+
+  Widget _navExpansionTile({
+    required String iconPath,
+    required String title,
+    required List<Widget> children,
+    bool isDark = false,
+  }) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      child: Theme(
+        // This removes the default borders and adds the grey background on expansion
+        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+        child: ExpansionTile(
+          backgroundColor: isDark
+              ? Colors.white10
+              : Colors.grey[200], // Grey background when open
+          collapsedShape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          leading: Image.asset(
+            iconPath,
+            width: 22,
+            height: 22,
+            color: isDark ? Colors.white : Colors.black87,
+            colorBlendMode: BlendMode.srcIn,
+          ),
+          title: Text(
+            title,
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w500,
+              color: isDark ? Colors.white : Colors.black87,
+            ),
+          ),
+          children: children,
+        ),
+      ),
+    );
+  }
+
+  Widget _subTile({required String title, required VoidCallback onTap}) {
+    return ListTile(
+      contentPadding: const EdgeInsets.only(
+        left: 54,
+      ), // Indent to align with parent text
+      title: Text(
+        title,
+        style: TextStyle(
+          fontSize: 13,
+          color: _isDark ? Colors.white70 : Colors.black54,
+        ),
+      ),
+      dense: true,
+      onTap: onTap,
     );
   }
 }

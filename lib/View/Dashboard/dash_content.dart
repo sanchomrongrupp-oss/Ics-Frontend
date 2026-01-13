@@ -16,7 +16,7 @@ class _DashContentState extends State<DashContent> {
     final theme = Theme.of(context);
     return Card(
       color: theme.cardColor,
-      elevation: 2,
+      elevation: 0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Container(
         width: double.infinity,
@@ -69,8 +69,7 @@ class _DashContentState extends State<DashContent> {
                   child: Card(
                     elevation: 4,
                     color: Colors.white,
-                    child: SizedBox(height: 400, 
-                    child: Chatdiagram(),),
+                    child: SizedBox(height: 400, child: Chatdiagram()),
                   ),
                 ),
                 Expanded(
@@ -78,12 +77,9 @@ class _DashContentState extends State<DashContent> {
                   child: Card(
                     elevation: 4,
                     color: Colors.white,
-                    child: SizedBox(
-                      height: 400,
-                      child: StockStatusChart(),
-                    ),
-                  )
-                )
+                    child: SizedBox(height: 400, child: StockStatusChart()),
+                  ),
+                ),
               ],
             ),
             Row(
@@ -94,14 +90,11 @@ class _DashContentState extends State<DashContent> {
                   child: Card(
                     elevation: 4,
                     color: Colors.white,
-                    child: SizedBox(
-                      height: 300,
-                      child: Alert(),
-                    ),
-                  )
-                )
+                    child: SizedBox(height: 316, child: Alert()),
+                  ),
+                ),
               ],
-            )
+            ),
           ],
         ),
       ),
