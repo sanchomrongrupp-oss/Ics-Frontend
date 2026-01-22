@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ics_frontend/Class/class_inpputfield.dart';
 
 class StockInformation extends StatefulWidget {
   const StockInformation({super.key});
@@ -27,7 +28,7 @@ class _StockInformationState extends State<StockInformation> {
             children: [
               Text(
                 "Search by item or barcorde",
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
               ),
               SizedBox(height: 12),
               Row(
@@ -106,20 +107,81 @@ class _StockInformationState extends State<StockInformation> {
                     runSpacing: 60,
                     alignment: WrapAlignment.start,
                     children: [
-                      _FieldProduct(context, "Product Item Code", 300),
-                      _FieldProduct(context, "Product Barcode", 300),
-                      _FieldProduct(context, "Product Name", 300),
-                      _FieldProduct(context, "Product Status", 300),
-                      _FieldProduct(context, "Product Color", 300),
-                      _FieldProduct(context, "Product Size", 300),
-                      _FieldProduct(context, "Product Brand", 300),
-                      _FieldProduct(context, "Product Unit", 300),
-                      _FieldProduct(context, "Product Cost_Price", 300),
-                      _FieldProduct(context, "Product Selling_Price", 300),
-                      _FieldProduct(context, "Product Stock_Quantity", 300),
-                      _FieldProduct(context, "Product Reoder", 300),
-                      _FieldProduct(context, "Product Supplier", 300),
-                      _FieldProduct(context, "Product Expiry_Date", 300),
+                      CustomInputField(
+                        label: "Product Item Code",
+                        width: 300,
+                        readOnly: true,
+                      ),
+                      CustomInputField(
+                        label: "Product Barcode",
+                        width: 300,
+                        readOnly: true,
+                      ),
+                      CustomInputField(
+                        label: "Product Name",
+                        width: 300,
+                        readOnly: true,
+                      ),
+                      CustomInputField(
+                        label: "Product Status",
+                        width: 300,
+                        readOnly: true,
+                      ),
+                      CustomInputField(
+                        label: "Product Color",
+                        width: 300,
+                        readOnly: true,
+                      ),
+                      CustomInputField(
+                        label: "Product Size",
+                        width: 300,
+                        readOnly: true,
+                      ),
+                      CustomInputField(
+                        label: "Product Brand",
+                        width: 300,
+                        readOnly: true,
+                      ),
+                      CustomInputField(
+                        label: "Product Unit",
+                        width: 300,
+                        readOnly: true,
+                      ),
+                      CustomInputField(
+                        label: "Product Cost Price",
+                        width: 300,
+                        readOnly: true,
+                      ),
+                      CustomInputField(
+                        label: "Product Selling Price",
+                        width: 300,
+                        readOnly: true,
+                      ),
+                      CustomInputField(
+                        label: "Product Stock Quantity",
+                        width: 300,
+                        readOnly: true,
+                      ),
+                      CustomInputField(
+                        label: "Product Expiry Date",
+                        width: 300,
+                        readOnly: true,
+                      ),
+                      CustomInputField(
+                        label: "Product Supplier ID",
+                        width: 300,
+                        readOnly: true,
+                      ),
+                      CustomInputField(
+                        label: "Product Supplier Name",
+                        width: 300,
+                        readOnly: true,
+                      ),
+                      CustomInputField(
+                        label: "Product Reoder",
+                        width: 300,
+                        readOnly: true,
+                      ),
                     ],
                   ),
                 ],

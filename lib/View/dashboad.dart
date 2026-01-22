@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ics_frontend/View/Dashboard/dash_content.dart';
+import 'package:ics_frontend/View/Inventory/adjustment.dart';
+import 'package:ics_frontend/View/Inventory/purchaseoders.dart';
 import 'package:ics_frontend/View/Inventory/stockinformation.dart';
 import 'package:ics_frontend/View/login.dart';
 
@@ -15,6 +17,8 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   bool _isDark = false;
+  bool _isInventoryExpanded = false; // Tracks Inventory ExpansionTile
+  String _currentTitle = "Inventory";
 
   late Widget _currentContent;
   @override
@@ -134,22 +138,52 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   SizedBox(height: 10),
                   _navExpansionTile(
                     iconPath: 'icons/inventorys.png',
-                    title: 'Inventory',
+                    title: _currentTitle,
                     isDark: _isDark,
+                    isExpanded: _isInventoryExpanded,
+                    onExpansionChanged: (Expanded) {
+                      setState(() {
+                        _isInventoryExpanded = Expanded;
+                      });
+                    },
                     children: [
                       _subTile(
-                        title: "Stock Informations",
+                        title: "Stock Info",
                         onTap: () {
                           setState(() {
+                            _currentTitle = "Stock Info"; // ✅ show subTile name
                             _currentContent = const StockInformation();
+                            _isInventoryExpanded =
+                                false; // ✅ collapse after tap
                           });
                         },
                       ),
-                      _subTile(title: "Purchase Orders", onTap: () {}),
-                      _subTile(title: "Inventory Adjustment", onTap: () {}),
-                      _subTile(title: "Inventory Count Stock", onTap: () {}),
+                      _subTile(
+                        title: "Purchase Orders",
+                        onTap: () {
+                          setState(() {
+                            _currentTitle =
+                                "Purchase Orders"; // ✅ show subTile name
+                            _currentContent = const PurchaseOders();
+                            _isInventoryExpanded =
+                                false; // ✅ collapse after tap
+                          });
+                        },
+                      ),
+                      _subTile(
+                        title: "Adjustment",
+                        onTap: () {
+                          setState(() {
+                            _currentTitle = "Adjustment";
+                            _currentContent = const Adjustment();
+                            _isInventoryExpanded =
+                                false; // ✅ collapse after tap
+                          });
+                        },
+                      ),
                     ],
                   ),
+
                   SizedBox(height: 10),
                   _navTile(
                     iconPath: 'icons/office.png',
@@ -393,6 +427,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     required String title,
     required List<Widget> children,
     bool isDark = false,
+    required bool isExpanded,
+    required ValueChanged<bool> onExpansionChanged,
   }) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
@@ -425,6 +461,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
           ),
           children: children,
+          initiallyExpanded: isExpanded,
+          onExpansionChanged: onExpansionChanged,
         ),
       ),
     );
