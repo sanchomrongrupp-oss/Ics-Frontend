@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:ics_frontend/View/Build/office.dart';
+import 'package:ics_frontend/View/Customer/customer.dart';
 import 'package:ics_frontend/View/Dashboard/dash_content.dart';
 import 'package:ics_frontend/View/Inventory/adjustment.dart';
 import 'package:ics_frontend/View/Inventory/purchaseoders.dart';
@@ -188,13 +190,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   _navTile(
                     iconPath: 'icons/office.png',
                     title: 'Office',
-                    onTap: () {},
+                    onTap: () {
+                      setState(() {
+                        _currentContent = const OfficeScreen();
+                      });
+                    },
                   ),
                   SizedBox(height: 10),
                   _navTile(
-                    iconPath: 'icons/brands.png',
-                    title: 'Brands',
-                    onTap: () {},
+                    iconPath: 'icons/towuser.png',
+                    title: 'Customers',
+                    onTap: () {
+                      setState(() {
+                        _currentContent = const CustomerScreen();
+                      });
+                    },
                   ),
                   SizedBox(height: 10),
                   _navTile(

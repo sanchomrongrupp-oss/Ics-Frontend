@@ -44,7 +44,7 @@ class _AdjustmentState extends State<Adjustment> {
       orderItems.add({
         "no": orderItems.length + 1,
         "item": itemController.text,
-        "name": "", // Mock name
+        "name": "Beer", // Mock name
         "qty": int.tryParse(qtyController.text) ?? 1,
         "price": 0.0, // Adjustments usually don't have a purchase price here
         "reason": _currentReason,
@@ -268,7 +268,7 @@ class _AdjustmentState extends State<Adjustment> {
                   onTap: _updateItem,
                 ),
                 CustomButton(
-                  label: "Done",
+                  label: "Send PO",
                   width: 140,
                   height: 40,
                   color: Colors.green,
@@ -334,6 +334,7 @@ class _AdjustmentState extends State<Adjustment> {
                       cells: [
                         DataCell(Text(row["no"].toString())),
                         DataCell(Text(row["item"])),
+                        DataCell(Text(row["name"])),
                         DataCell(Text(row["qty"].toString())),
                         DataCell(Text(row["reason"])),
                         DataCell(Text(row["adjust_date"])),
