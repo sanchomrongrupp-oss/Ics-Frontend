@@ -78,114 +78,265 @@ class _PurchaseOdersState extends State<PurchaseOders> {
         borderRadius: BorderRadius.circular(16),
         side: BorderSide(color: isDark ? Colors.white10 : Colors.grey.shade300),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "Purchase Orders",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final isDesktop = constraints.maxWidth >= 1200;
+          final isTablet =
+              constraints.maxWidth >= 800 && constraints.maxWidth < 1200;
+          final isMobile = constraints.maxWidth < 800;
+
+          // Responsive sizing
+          final titleFontSize = isDesktop ? 18.0 : (isTablet ? 16.0 : 14.0);
+          final padding = isDesktop ? 28.0 : (isTablet ? 20.0 : 16.0);
+          final spacing = isDesktop ? 16.0 : (isTablet ? 12.0 : 8.0);
+          final dividerHeight = isDesktop ? 32.0 : (isTablet ? 24.0 : 20.0);
+          final inputFieldWidth = isDesktop
+              ? 300.0
+              : (isTablet ? 260.0 : 220.0);
+          final inputFieldSpacing = isDesktop ? 80.0 : (isTablet ? 60.0 : 30.0);
+          final inputFieldRowSpacing = isDesktop
+              ? 40.0
+              : (isTablet ? 32.0 : 24.0);
+          final qtyFieldWidth = isDesktop ? 200.0 : (isTablet ? 160.0 : 140.0);
+          final buttonWidth = isDesktop ? 140.0 : (isTablet ? 120.0 : 100.0);
+          final buttonHeight = isDesktop ? 48.0 : (isTablet ? 44.0 : 40.0);
+          final tableHeight = isDesktop ? 560.0 : (isTablet ? 480.0 : 420.0);
+
+          return Padding(
+            padding: EdgeInsets.all(padding),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Purchase Orders",
+                    style: TextStyle(
+                      fontSize: titleFontSize,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  Divider(height: dividerHeight),
+
+                  /// HEADER INPUTS
+                  isMobile
+                      ? Column(
+                          children: [
+                            CustomInputField(
+                              label: "PO Number",
+                              width: double.infinity,
+                              readOnly: true,
+                            ),
+                            SizedBox(height: inputFieldRowSpacing),
+                            CustomInputField(
+                              label: "Supplier ID",
+                              width: double.infinity,
+                            ),
+                            SizedBox(height: inputFieldRowSpacing),
+                            CustomInputField(
+                              label: "Supplier Name",
+                              width: double.infinity,
+                              readOnly: true,
+                            ),
+                            SizedBox(height: inputFieldRowSpacing),
+                            CustomInputField(
+                              label: "Order Date",
+                              width: double.infinity,
+                              readOnly: true,
+                            ),
+                          ],
+                        )
+                      : Wrap(
+                          spacing: inputFieldSpacing,
+                          runSpacing: inputFieldRowSpacing,
+                          children: [
+                            CustomInputField(
+                              label: "PO Number",
+                              width: inputFieldWidth,
+                              readOnly: true,
+                            ),
+                            CustomInputField(
+                              label: "Supplier ID",
+                              width: inputFieldWidth,
+                            ),
+                            CustomInputField(
+                              label: "Supplier Name",
+                              width: inputFieldWidth,
+                              readOnly: true,
+                            ),
+                            CustomInputField(
+                              label: "Order Date",
+                              width: inputFieldWidth,
+                              readOnly: true,
+                            ),
+                          ],
+                        ),
+
+                  SizedBox(height: dividerHeight),
+
+                  Text(
+                    "Purchase Order Items",
+                    style: TextStyle(
+                      fontSize: titleFontSize,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  Divider(height: dividerHeight),
+
+                  /// ITEM INPUT + BUTTONS
+                  isMobile
+                      ? Column(
+                          children: [
+                            CustomInputField(
+                              label: "Item",
+                              width: double.infinity,
+                              controller: itemController,
+                            ),
+                            SizedBox(height: spacing),
+                            CustomInputField(
+                              label: "Qty",
+                              width: double.infinity,
+                              controller: qtyController,
+                            ),
+                            SizedBox(height: spacing),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: CustomButton(
+                                    label: "Add Item",
+                                    width: double.infinity,
+                                    height: buttonHeight,
+                                    color: Colors.blue,
+                                    textcolor: Colors.white,
+                                    onTap: _addItem,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: spacing),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: CustomButton(
+                                    label: "Delete Item",
+                                    width: double.infinity,
+                                    height: buttonHeight,
+                                    color: Colors.red,
+                                    textcolor: Colors.white,
+                                    onTap: _deleteItem,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: spacing),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: CustomButton(
+                                    label: "Update Item",
+                                    width: double.infinity,
+                                    height: buttonHeight,
+                                    color: Colors.orange,
+                                    textcolor: Colors.white,
+                                    onTap: _updateItem,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: spacing),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: CustomButton(
+                                    label: "Send PO",
+                                    width: double.infinity,
+                                    height: buttonHeight,
+                                    color: Colors.green,
+                                    textcolor: Colors.white,
+                                    onTap: () => debugPrint("Send PO"),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        )
+                      : Wrap(
+                          spacing: spacing,
+                          runSpacing: spacing,
+                          crossAxisAlignment: WrapCrossAlignment.end,
+                          children: [
+                            CustomInputField(
+                              label: "Item",
+                              width: inputFieldWidth,
+                              controller: itemController,
+                            ),
+                            CustomInputField(
+                              label: "Qty",
+                              width: qtyFieldWidth,
+                              controller: qtyController,
+                            ),
+                            CustomButton(
+                              label: "Add Item",
+                              width: buttonWidth,
+                              height: buttonHeight,
+                              color: Colors.blue,
+                              textcolor: Colors.white,
+                              onTap: _addItem,
+                            ),
+                            CustomButton(
+                              label: "Delete Item",
+                              width: buttonWidth,
+                              height: buttonHeight,
+                              color: Colors.red,
+                              textcolor: Colors.white,
+                              onTap: _deleteItem,
+                            ),
+                            CustomButton(
+                              label: "Update Item",
+                              width: buttonWidth,
+                              height: buttonHeight,
+                              color: Colors.orange,
+                              textcolor: Colors.white,
+                              onTap: _updateItem,
+                            ),
+                            CustomButton(
+                              label: "Send PO",
+                              width: buttonWidth,
+                              height: buttonHeight,
+                              color: Colors.green,
+                              textcolor: Colors.white,
+                              onTap: () => debugPrint("Send PO"),
+                            ),
+                          ],
+                        ),
+
+                  SizedBox(height: spacing * 2),
+
+                  /// TABLE
+                  SizedBox(
+                    height: tableHeight,
+                    width: double.infinity,
+                    child: _tableItems(isDesktop, isTablet),
+                  ),
+                ],
+              ),
             ),
-            const Divider(height: 32),
-
-            /// HEADER INPUTS
-            Wrap(
-              spacing: 80,
-              runSpacing: 40,
-              children: const [
-                CustomInputField(
-                  label: "PO Number",
-                  width: 300,
-                  readOnly: true,
-                ),
-                CustomInputField(label: "Supplier ID", width: 300),
-                CustomInputField(
-                  label: "Supplier Name",
-                  width: 300,
-                  readOnly: true,
-                ),
-                CustomInputField(
-                  label: "Order Date",
-                  width: 300,
-                  readOnly: true,
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 32),
-
-            const Text(
-              "Purchase Order Items",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            ),
-            const Divider(height: 32),
-
-            /// ITEM INPUT + BUTTONS
-            Wrap(
-              spacing: 40,
-              runSpacing: 40,
-              crossAxisAlignment: WrapCrossAlignment.end,
-              children: [
-                CustomInputField(
-                  label: "Item",
-                  width: 300,
-                  controller: itemController,
-                ),
-                CustomInputField(
-                  label: "Qty",
-                  width: 200,
-                  controller: qtyController,
-                ),
-                CustomButton(
-                  label: "Add Item",
-                  width: 140,
-                  height: 40,
-                  color: Colors.blue,
-                  textcolor: Colors.white,
-                  onTap: _addItem,
-                ),
-                CustomButton(
-                  label: "Delete Item",
-                  width: 140,
-                  height: 40,
-                  color: Colors.red,
-                  textcolor: Colors.white,
-                  onTap: _deleteItem,
-                ),
-                CustomButton(
-                  label: "Update Item",
-                  width: 140,
-                  height: 40,
-                  color: Colors.orange,
-                  textcolor: Colors.white,
-                  onTap: _updateItem,
-                ),
-                CustomButton(
-                  label: "Send PO",
-                  width: 140,
-                  height: 40,
-                  color: Colors.green,
-                  textcolor: Colors.white,
-                  onTap: () => debugPrint("Send PO"),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 24),
-
-            /// TABLE
-            SizedBox(height: 521, width: double.infinity, child: _tableItems()),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
 
-  Widget _tableItems() {
+  Widget _tableItems(bool isDesktop, bool isTablet) {
     return LayoutBuilder(
       builder: (context, constraints) {
         final isDark = Theme.of(context).brightness == Brightness.dark;
+
+        // Responsive table sizing
+        final headingRowHeight = isDesktop ? 52.0 : (isTablet ? 48.0 : 44.0);
+        final dataRowHeight = isDesktop ? 50.0 : (isTablet ? 46.0 : 42.0);
+        final columnSpacing = isDesktop ? 40.0 : (isTablet ? 28.0 : 16.0);
+        final horizontalMargin = isDesktop ? 20.0 : (isTablet ? 16.0 : 12.0);
+        final columnFontSize = isDesktop ? 14.0 : (isTablet ? 12.0 : 11.0);
 
         return SingleChildScrollView(
           scrollDirection: Axis.vertical,
@@ -201,22 +352,62 @@ class _PurchaseOdersState extends State<PurchaseOders> {
                     headingRowColor: WidgetStateProperty.all(
                       isDark ? Colors.grey.shade900 : Colors.blue[300],
                     ),
-                    horizontalMargin: 16,
-                    columnSpacing: 40,
+                    horizontalMargin: horizontalMargin,
+                    columnSpacing: columnSpacing,
                   ),
                   child: DataTable(
                     showCheckboxColumn: false,
-                    headingRowHeight: 48,
-                    dataRowHeight: 46,
-                    columns: const [
-                      DataColumn(label: Text("No")),
-                      DataColumn(label: Text("Item")),
-                      DataColumn(label: Text("Name")),
-                      DataColumn(label: Text("Qty")),
-                      DataColumn(label: Text("Price")),
-                      DataColumn(label: Text("Amount")),
-                      DataColumn(label: Text("Order Date")),
-                      DataColumn(label: Text("Exp Date")),
+                    headingRowHeight: headingRowHeight,
+                    dataRowHeight: dataRowHeight,
+                    columns: [
+                      DataColumn(
+                        label: Text(
+                          "No",
+                          style: TextStyle(fontSize: columnFontSize),
+                        ),
+                      ),
+                      DataColumn(
+                        label: Text(
+                          "Item",
+                          style: TextStyle(fontSize: columnFontSize),
+                        ),
+                      ),
+                      DataColumn(
+                        label: Text(
+                          "Name",
+                          style: TextStyle(fontSize: columnFontSize),
+                        ),
+                      ),
+                      DataColumn(
+                        label: Text(
+                          "Qty",
+                          style: TextStyle(fontSize: columnFontSize),
+                        ),
+                      ),
+                      DataColumn(
+                        label: Text(
+                          "Price",
+                          style: TextStyle(fontSize: columnFontSize),
+                        ),
+                      ),
+                      DataColumn(
+                        label: Text(
+                          "Amount",
+                          style: TextStyle(fontSize: columnFontSize),
+                        ),
+                      ),
+                      DataColumn(
+                        label: Text(
+                          "Order Date",
+                          style: TextStyle(fontSize: columnFontSize),
+                        ),
+                      ),
+                      DataColumn(
+                        label: Text(
+                          "Exp Date",
+                          style: TextStyle(fontSize: columnFontSize),
+                        ),
+                      ),
                     ],
 
                     rows: orderItems.isEmpty
@@ -237,14 +428,54 @@ class _PurchaseOdersState extends State<PurchaseOders> {
                                 });
                               },
                               cells: [
-                                DataCell(Text(row["no"].toString())),
-                                DataCell(Text(row["item"])),
-                                DataCell(Text(row["name"])),
-                                DataCell(Text(qty.toString())),
-                                DataCell(Text(price.toStringAsFixed(2))),
-                                DataCell(Text(amount.toStringAsFixed(2))),
-                                DataCell(Text(row["order_date"])),
-                                DataCell(Text(row["exp_date"])),
+                                DataCell(
+                                  Text(
+                                    row["no"].toString(),
+                                    style: TextStyle(fontSize: columnFontSize),
+                                  ),
+                                ),
+                                DataCell(
+                                  Text(
+                                    row["item"],
+                                    style: TextStyle(fontSize: columnFontSize),
+                                  ),
+                                ),
+                                DataCell(
+                                  Text(
+                                    row["name"],
+                                    style: TextStyle(fontSize: columnFontSize),
+                                  ),
+                                ),
+                                DataCell(
+                                  Text(
+                                    qty.toString(),
+                                    style: TextStyle(fontSize: columnFontSize),
+                                  ),
+                                ),
+                                DataCell(
+                                  Text(
+                                    price.toStringAsFixed(2),
+                                    style: TextStyle(fontSize: columnFontSize),
+                                  ),
+                                ),
+                                DataCell(
+                                  Text(
+                                    amount.toStringAsFixed(2),
+                                    style: TextStyle(fontSize: columnFontSize),
+                                  ),
+                                ),
+                                DataCell(
+                                  Text(
+                                    row["order_date"],
+                                    style: TextStyle(fontSize: columnFontSize),
+                                  ),
+                                ),
+                                DataCell(
+                                  Text(
+                                    row["exp_date"],
+                                    style: TextStyle(fontSize: columnFontSize),
+                                  ),
+                                ),
                               ],
                             );
                           }),

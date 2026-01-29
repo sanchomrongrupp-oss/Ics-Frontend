@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:ics_frontend/Route/navigator.dart';
+import 'package:ics_frontend/View/Admin/employeeinformation.dart';
 import 'package:ics_frontend/View/Build/office.dart';
 import 'package:ics_frontend/View/Customer/customer.dart';
 import 'package:ics_frontend/View/Dashboard/dash_content.dart';
+import 'package:ics_frontend/View/Finances/finances.dart';
 import 'package:ics_frontend/View/Inventory/adjustment.dart';
 import 'package:ics_frontend/View/Inventory/purchaseoders.dart';
 import 'package:ics_frontend/View/Inventory/stockinformation.dart';
-import 'package:ics_frontend/View/login.dart';
+import 'package:ics_frontend/View/Notification/notification.dart';
+import 'package:ics_frontend/View/Profile/profile.dart';
+import 'package:ics_frontend/View/Sale/sales.dart';
+import 'package:ics_frontend/View/Setting/setting.dart';
 
 // Note: Ensure your assets are defined in pubspec.yaml
 // and your imports for DashContent and CustomLightModeSwitch are correct.
@@ -63,29 +69,58 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: Scaffold(
         backgroundColor: theme.scaffoldBackgroundColor,
         body: SafeArea(
-          child: Row(
-            children: [
-              // --- SIDEBAR ---
-              _buildSidebar(theme),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final isMobile = constraints.maxWidth < 800;
+              final isTablet =
+                  constraints.maxWidth >= 800 && constraints.maxWidth < 1200;
+              final isDesktop = constraints.maxWidth >= 1200;
 
-              // --- MAIN CONTENT ---
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                    top: 16.0,
-                    right: 16.0,
-                    bottom: 16.0,
-                  ),
-                  child: Column(
-                    children: [
-                      _buildTopHeader(theme),
-                      SizedBox(height: 16),
-                      _currentContent,
-                    ],
-                  ),
-                ),
-              ),
-            ],
+              return isMobile
+                  ? Column(
+                      children: [
+                        // --- MOBILE: TOP HEADER ---
+                        _buildTopHeader(theme, isMobile: true),
+                        // --- MOBILE: SIDEBAR AS DRAWER ---
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12.0,
+                              vertical: 12.0,
+                            ),
+                            child: _currentContent,
+                          ),
+                        ),
+                      ],
+                    )
+                  : Row(
+                      children: [
+                        // --- DESKTOP/TABLET: SIDEBAR ---
+                        _buildSidebar(
+                          theme,
+                          isTablet: isTablet,
+                          isDesktop: isDesktop,
+                        ),
+
+                        // --- DESKTOP/TABLET: MAIN CONTENT ---
+                        Expanded(
+                          child: Column(
+                            children: [
+                              _buildTopHeader(theme, isMobile: false),
+                              Expanded(
+                                child: Padding(
+                                  padding: EdgeInsets.all(
+                                    isDesktop ? 20.0 : 16.0,
+                                  ),
+                                  child: _currentContent,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    );
+            },
           ),
         ),
       ),
@@ -93,247 +128,270 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   // --- Widget: Sidebar ---
-  Widget _buildSidebar(ThemeData theme) {
-    return Container(
-      width: 280,
-      margin: const EdgeInsets.all(12),
-      child: Card(
-        elevation: 0,
-        color: theme.cardColor,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        child: Column(
-          children: [
-            const SizedBox(height: 30),
-            const Text(
-              "Inventory",
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: Colors.redAccent,
-              ),
-            ),
-            const Text(
-              "Control System",
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                letterSpacing: 1.2,
-              ),
-            ),
-            const SizedBox(height: 40),
+  Widget _buildSidebar(
+    ThemeData theme, {
+    bool isTablet = false,
+    bool isDesktop = false,
+  }) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final sidebarWidth = isDesktop ? 280.0 : (isTablet ? 220.0 : 280.0);
+        final fontSize = isDesktop ? 28.0 : (isTablet ? 22.0 : 28.0);
+        final subtitleSize = isDesktop ? 14.0 : (isTablet ? 11.0 : 14.0);
+        final cardMargin = isDesktop ? 16.0 : 12.0;
+        final listPadding = isDesktop ? 20.0 : 12.0;
+        final itemHeight = isDesktop ? 12.0 : 10.0;
+        final paddingBottom = isDesktop ? 24.0 : 20.0;
 
-            // Sidebar Navigation Items
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                children: [
-                  _navTile(
-                    iconPath: 'icons/dashboard.png',
-                    title: 'Dashboard',
-                    isActive: _currentContent is DashContent,
-                    onTap: () {
-                      setState(() {
-                        _currentContent = const DashContent();
-                      });
-                    },
+        return Container(
+          width: sidebarWidth,
+          margin: EdgeInsets.all(cardMargin),
+          child: Card(
+            elevation: 0,
+            color: theme.cardColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Column(
+              children: [
+                SizedBox(height: isDesktop ? 24 : 20),
+                Text(
+                  "Inventory",
+                  style: TextStyle(
+                    fontSize: fontSize,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.redAccent,
                   ),
-                  SizedBox(height: 10),
-                  _navExpansionTile(
-                    iconPath: 'icons/inventorys.png',
-                    title: _currentTitle,
-                    isDark: _isDark,
-                    isExpanded: _isInventoryExpanded,
-                    onExpansionChanged: (Expanded) {
-                      setState(() {
-                        _isInventoryExpanded = Expanded;
-                      });
-                    },
+                ),
+                Text(
+                  "Control System",
+                  style: TextStyle(
+                    fontSize: subtitleSize,
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: 1.2,
+                  ),
+                ),
+                SizedBox(height: isDesktop ? 32 : 30),
+
+                // Sidebar Navigation Items
+                Expanded(
+                  child: ListView(
+                    padding: EdgeInsets.symmetric(horizontal: listPadding),
                     children: [
-                      _subTile(
-                        title: "Stock Info",
+                      _navTile(
+                        iconPath: 'icons/dashboard.png',
+                        title: 'Dashboard',
+                        isActive: _currentContent is DashContent,
                         onTap: () {
                           setState(() {
-                            _currentTitle = "Stock Info"; // ✅ show subTile name
-                            _currentContent = const StockInformation();
-                            _isInventoryExpanded =
-                                false; // ✅ collapse after tap
+                            _currentContent = const DashContent();
                           });
                         },
                       ),
-                      _subTile(
-                        title: "Purchase Orders",
+                      SizedBox(height: itemHeight),
+                      _navExpansionTile(
+                        iconPath: 'icons/inventorys.png',
+                        title: _currentTitle,
+                        isDark: _isDark,
+                        isExpanded: _isInventoryExpanded,
+                        onExpansionChanged: (Expanded) {
+                          setState(() {
+                            _isInventoryExpanded = Expanded;
+                          });
+                        },
+                        children: [
+                          _subTile(
+                            title: "Stock Info",
+                            onTap: () {
+                              setState(() {
+                                _currentTitle = "Stock Info";
+                                _currentContent = const StockInformation();
+                                _isInventoryExpanded = false;
+                              });
+                            },
+                          ),
+                          _subTile(
+                            title: "Purchase Orders",
+                            onTap: () {
+                              setState(() {
+                                _currentTitle = "Purchase Orders";
+                                _currentContent = const PurchaseOders();
+                                _isInventoryExpanded = false;
+                              });
+                            },
+                          ),
+                          _subTile(
+                            title: "Adjustment",
+                            onTap: () {
+                              setState(() {
+                                _currentTitle = "Adjustment";
+                                _currentContent = const Adjustment();
+                                _isInventoryExpanded = false;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: itemHeight),
+                      _navTile(
+                        iconPath: 'icons/office.png',
+                        title: 'Office',
                         onTap: () {
                           setState(() {
-                            _currentTitle =
-                                "Purchase Orders"; // ✅ show subTile name
-                            _currentContent = const PurchaseOders();
-                            _isInventoryExpanded =
-                                false; // ✅ collapse after tap
+                            _currentContent = const OfficeScreen();
                           });
                         },
                       ),
-                      _subTile(
-                        title: "Adjustment",
+                      SizedBox(height: itemHeight),
+                      _navTile(
+                        iconPath: 'icons/towuser.png',
+                        title: 'Customers',
                         onTap: () {
                           setState(() {
-                            _currentTitle = "Adjustment";
-                            _currentContent = const Adjustment();
-                            _isInventoryExpanded =
-                                false; // ✅ collapse after tap
+                            _currentContent = const CustomerScreen();
+                          });
+                        },
+                      ),
+                      SizedBox(height: itemHeight),
+                      _navTile(
+                        iconPath: 'icons/towuser.png',
+                        title: 'Employees',
+                        onTap: () {
+                          setState(() {
+                            _currentContent = const EmployeeInformationScreen();
+                          });
+                        },
+                      ),
+                      SizedBox(height: itemHeight),
+                      _navTile(
+                        iconPath: 'icons/finances.png',
+                        title: 'Finances',
+                        onTap: () {
+                          setState(() {
+                            _currentContent = const FinancesScreen();
+                          });
+                        },
+                      ),
+                      SizedBox(height: itemHeight),
+                      _navTile(
+                        iconPath: 'icons/sale.png',
+                        title: 'Sale',
+                        onTap: () {
+                          setState(() {
+                            _currentContent = const SalesScreen();
+                          });
+                        },
+                      ),
+                      SizedBox(height: itemHeight),
+                      _navTile(
+                        iconPath: 'icons/settings.png',
+                        title: 'Settings',
+                        onTap: () {
+                          setState(() {
+                            _currentContent = const SettingScreen();
                           });
                         },
                       ),
                     ],
                   ),
-
-                  SizedBox(height: 10),
-                  _navTile(
-                    iconPath: 'icons/office.png',
-                    title: 'Office',
-                    onTap: () {
-                      setState(() {
-                        _currentContent = const OfficeScreen();
-                      });
-                    },
-                  ),
-                  SizedBox(height: 10),
-                  _navTile(
-                    iconPath: 'icons/towuser.png',
-                    title: 'Customers',
-                    onTap: () {
-                      setState(() {
-                        _currentContent = const CustomerScreen();
-                      });
-                    },
-                  ),
-                  SizedBox(height: 10),
-                  _navTile(
-                    iconPath: 'icons/towuser.png',
-                    title: 'Employees',
-                    onTap: () {},
-                  ),
-                  SizedBox(height: 10),
-                  _navTile(
-                    iconPath: 'icons/finances.png',
-                    title: 'Finances',
-                    onTap: () {},
-                  ),
-                  SizedBox(height: 10),
-                  _navTile(
-                    iconPath: 'icons/sale.png',
-                    title: 'Sale',
-                    onTap: () {},
-                  ),
-                  SizedBox(height: 10),
-                  _navTile(
-                    iconPath: 'icons/settings.png',
-                    title: 'Settings',
-                    onTap: () {},
-                  ),
-                ],
-              ),
-            ),
-
-            // Theme Switcher at bottom
-            Padding(
-              padding: const EdgeInsets.only(bottom: 20),
-              child: ListTile(
-                title: Text(
-                  _isDark ? "Dark Mode" : "Light Mode",
-                  style: const TextStyle(fontSize: 14),
                 ),
-                trailing: Switch(
-                  value: _isDark,
-                  onChanged: (val) => setState(() => _isDark = val),
+
+                // Theme Switcher at bottom
+                Padding(
+                  padding: EdgeInsets.only(bottom: paddingBottom),
+                  child: ListTile(
+                    title: Text(
+                      _isDark ? "Dark Mode" : "Light Mode",
+                      style: TextStyle(fontSize: isDesktop ? 15 : 14),
+                    ),
+                    trailing: Switch(
+                      value: _isDark,
+                      onChanged: (val) => setState(() => _isDark = val),
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
   // --- Widget: Top Header Bar ---
-  Widget _buildTopHeader(ThemeData theme) {
+  Widget _buildTopHeader(ThemeData theme, {required bool isMobile}) {
     return Card(
       elevation: 0,
       color: theme.cardColor,
+      margin: EdgeInsets.all(isMobile ? 8 : 12),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        padding: EdgeInsets.symmetric(
+          horizontal: isMobile ? 12 : 20,
+          vertical: isMobile ? 8 : 12,
+        ),
         child: Row(
           children: [
             // User Profile
-            Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: Colors.grey.withOpacity(0.3),
-                  width: 2,
-                ),
-              ),
-              child: const CircleAvatar(
-                radius: 22,
-                backgroundColor: Colors.white,
-                child: Image(image: AssetImage('icons/dog.png')),
-              ),
-            ),
-            const SizedBox(width: 45),
-
-            // Action Icons (Responsive spacing)
-            _headerIconButton(
-              onTap: () {},
-              assetPath: 'icons/bell.png',
-              hasBadge: true,
-            ),
-            const SizedBox(width: 30),
-            _headerIconButton(
-              onTap: () {},
-              assetPath: 'icons/message.png',
-              hasBadge: true,
-            ),
-            const SizedBox(width: 30),
-            _headerIconButton(onTap: () {}, assetPath: 'icons/calendar.png'),
-
-            const Spacer(), // Pushes search bar to the right
-            // Search Bar
-            Expanded(
-              flex: 2,
+            InkWell(
+              onTap: () {
+                // Navigate to your profile screen
+                setState(() {
+                  _currentContent = const DesktopProfileScreen();
+                });
+              },
+              borderRadius: BorderRadius.circular(
+                100,
+              ), // Ensures the ripple effect is circular
               child: Container(
-                height: 45,
+                padding: const EdgeInsets.all(
+                  2,
+                ), // Space between border and avatar
                 decoration: BoxDecoration(
-                  color: _isDark ? Colors.black26 : Colors.grey[100],
-                  borderRadius: BorderRadius.circular(8),
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Colors.grey.withOpacity(0.3),
+                    width: 2,
+                  ),
                 ),
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: "Search",
-                    hintStyle: const TextStyle(fontSize: 14),
-                    prefixIcon: Padding(
-                      padding: const EdgeInsets.all(
-                        4.0,
-                      ), // Adjust padding to "shrink" the icon
-                      child: _headerIconButton(
-                        onTap: () {},
-                        assetPath: 'icons/search.png',
-                      ),
+                child: CircleAvatar(
+                  radius: isMobile ? 18 : 22,
+                  backgroundColor: Colors.white,
+                  // Using ClipOval to ensure the image fits perfectly inside the avatar
+                  child: ClipOval(
+                    child: Image.asset(
+                      'icons/dog.png',
+                      fit: BoxFit.cover,
+                      width: isMobile ? 36 : 44,
+                      height: isMobile ? 36 : 44,
+                      // Error handling in case the asset is missing
+                      errorBuilder: (context, error, stackTrace) =>
+                          const Icon(Icons.person),
                     ),
-                    border: InputBorder.none,
-                    contentPadding: const EdgeInsets.symmetric(vertical: 10),
                   ),
                 ),
               ),
             ),
+            SizedBox(width: isMobile ? 12 : 45),
 
-            const SizedBox(width: 30),
+            // Action Icons (Responsive spacing)
+            if (!isMobile) ...[
+              _headerIconButton(
+                onTap: () {
+                  setState(() {
+                    _currentContent = const NotificationScreen();
+                  });
+                },
+                assetPath: 'icons/bell.png',
+                hasBadge: true,
+              ),
+              SizedBox(width: isMobile ? 15 : 30),
+            ],
+
+            const Spacer(),
             _headerIconButton(
               onTap: () {
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginScreen()),
-                  (Route<dynamic> route) => false,
-                );
+                AppNavigator.replaceWithLogin(context);
               },
               assetPath: 'icons/logout.png',
               color: Colors.redAccent,
@@ -470,9 +528,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
               color: isDark ? Colors.white : Colors.black87,
             ),
           ),
-          children: children,
           initiallyExpanded: isExpanded,
           onExpansionChanged: onExpansionChanged,
+          children: children,
         ),
       ),
     );

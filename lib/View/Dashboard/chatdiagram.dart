@@ -50,159 +50,177 @@ class ChatdiagramState extends State<Chatdiagram> {
 
   @override
   Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: 1,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                makeTransactionsIcon(),
-                const SizedBox(width: 38),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Stock In Vs Stock Out',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isTablet =
+            constraints.maxWidth >= 600 && constraints.maxWidth < 1000;
+        final isDesktop = constraints.maxWidth >= 1000;
+
+        // Responsive sizing
+        final titleFontSize = isDesktop ? 26.0 : (isTablet ? 22.0 : 18.0);
+        final subtitleFontSize = isDesktop ? 16.0 : (isTablet ? 14.0 : 12.0);
+        final labelFontSize = isDesktop ? 14.0 : (isTablet ? 12.0 : 10.0);
+        final padding = isDesktop ? 20.0 : (isTablet ? 16.0 : 12.0);
+        final spacing = isDesktop ? 20.0 : (isTablet ? 16.0 : 12.0);
+        final reservedSize = isDesktop ? 45.0 : (isTablet ? 35.0 : 30.0);
+        final bottomReserved = isDesktop ? 50.0 : (isTablet ? 42.0 : 35.0);
+
+        return Padding(
+          padding: EdgeInsets.all(padding),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  makeTransactionsIcon(isDesktop),
+                  SizedBox(width: spacing),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Stock In Vs Stock Out',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: titleFontSize,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    Row(
-                      children: [
-                        const Text(
-                          'Monthly Overview',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                      Row(
+                        children: [
+                          Text(
+                            'Monthly Overview',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: subtitleFontSize,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        IconButton(
-                          onPressed: () {},
-                          icon: Icon(Icons.arrow_drop_down),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 38),
-            Expanded(
-              child: BarChart(
-                BarChartData(
-                  maxY: 20,
-                  barTouchData: BarTouchData(
-                    touchTooltipData: BarTouchTooltipData(
-                      getTooltipColor: (group) => Colors.blueGrey,
-                      getTooltipItem: (a, b, c, d) =>
-                          null, // Keeps tooltips hidden as per your original code
-                    ),
-                    touchCallback: (FlTouchEvent event, response) {
-                      if (response == null || response.spot == null) {
-                        setState(() {
-                          touchedGroupIndex = -1;
-                          showingBarGroups = List.of(rawBarGroups);
-                        });
-                        return;
-                      }
-
-                      touchedGroupIndex = response.spot!.touchedBarGroupIndex;
-
-                      setState(() {
-                        if (!event.isInterestedForInteractions) {
-                          touchedGroupIndex = -1;
-                          showingBarGroups = List.of(rawBarGroups);
+                          IconButton(
+                            onPressed: () {},
+                            icon: const Icon(Icons.arrow_drop_down),
+                            iconSize: isDesktop ? 28 : (isTablet ? 24 : 20),
+                            padding: EdgeInsets.all(isDesktop ? 8 : 4),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              SizedBox(height: spacing * 1.5),
+              Expanded(
+                child: BarChart(
+                  BarChartData(
+                    maxY: 20,
+                    barTouchData: BarTouchData(
+                      touchTooltipData: BarTouchTooltipData(
+                        getTooltipColor: (group) => Colors.blueGrey,
+                        getTooltipItem: (a, b, c, d) => null,
+                      ),
+                      touchCallback: (FlTouchEvent event, response) {
+                        if (response == null || response.spot == null) {
+                          setState(() {
+                            touchedGroupIndex = -1;
+                            showingBarGroups = List.of(rawBarGroups);
+                          });
                           return;
                         }
 
-                        // Create a fresh list to avoid mutating the original data
-                        showingBarGroups = List.of(rawBarGroups);
-                        if (touchedGroupIndex != -1) {
-                          var sum = 0.0;
-                          for (final rod
-                              in showingBarGroups[touchedGroupIndex].barRods) {
-                            sum += rod.toY;
-                          }
-                          final avg =
-                              sum /
-                              showingBarGroups[touchedGroupIndex]
-                                  .barRods
-                                  .length;
+                        touchedGroupIndex = response.spot!.touchedBarGroupIndex;
 
-                          showingBarGroups[touchedGroupIndex] =
-                              showingBarGroups[touchedGroupIndex].copyWith(
-                                barRods: showingBarGroups[touchedGroupIndex]
+                        setState(() {
+                          if (!event.isInterestedForInteractions) {
+                            touchedGroupIndex = -1;
+                            showingBarGroups = List.of(rawBarGroups);
+                            return;
+                          }
+
+                          showingBarGroups = List.of(rawBarGroups);
+                          if (touchedGroupIndex != -1) {
+                            var sum = 0.0;
+                            for (final rod
+                                in showingBarGroups[touchedGroupIndex]
+                                    .barRods) {
+                              sum += rod.toY;
+                            }
+                            final avg =
+                                sum /
+                                showingBarGroups[touchedGroupIndex]
                                     .barRods
-                                    .map((rod) {
-                                      return rod.copyWith(
-                                        toY: avg,
-                                        color: widget.avgColor,
-                                      );
-                                    })
-                                    .toList(),
-                              );
-                        }
-                      });
-                    },
-                  ),
-                  titlesData: FlTitlesData(
-                    show: true,
-                    rightTitles: const AxisTitles(
-                      sideTitles: SideTitles(showTitles: false),
+                                    .length;
+
+                            showingBarGroups[touchedGroupIndex] =
+                                showingBarGroups[touchedGroupIndex].copyWith(
+                                  barRods: showingBarGroups[touchedGroupIndex]
+                                      .barRods
+                                      .map((rod) {
+                                        return rod.copyWith(
+                                          toY: avg,
+                                          color: widget.avgColor,
+                                        );
+                                      })
+                                      .toList(),
+                                );
+                          }
+                        });
+                      },
                     ),
-                    topTitles: const AxisTitles(
-                      sideTitles: SideTitles(showTitles: false),
-                    ),
-                    bottomTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: true,
-                        getTitlesWidget: bottomTitles,
-                        reservedSize: 42,
+                    titlesData: FlTitlesData(
+                      show: true,
+                      rightTitles: const AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
+                      topTitles: const AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
+                      bottomTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          getTitlesWidget: (value, meta) =>
+                              bottomTitles(value, meta, labelFontSize),
+                          reservedSize: bottomReserved,
+                        ),
+                      ),
+                      leftTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          reservedSize: reservedSize,
+                          interval: 1,
+                          getTitlesWidget: (value, meta) =>
+                              leftTitles(value, meta, labelFontSize),
+                        ),
                       ),
                     ),
-                    leftTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: true,
-                        reservedSize: 35, // Increased slightly to fit '10K'
-                        interval: 1,
-                        getTitlesWidget: leftTitles,
-                      ),
-                    ),
+                    borderData: FlBorderData(show: false),
+                    barGroups: showingBarGroups,
+                    gridData: const FlGridData(show: false),
                   ),
-                  borderData: FlBorderData(show: false),
-                  barGroups: showingBarGroups,
-                  gridData: const FlGridData(show: false),
                 ),
               ),
-            ),
-          ],
-        ),
-      ),
+            ],
+          ),
+        );
+      },
     );
   }
 
-  Widget leftTitles(double value, TitleMeta meta) {
-    const style = TextStyle(
-      color: Color(0xff7589a2),
+  Widget leftTitles(double value, TitleMeta meta, double fontSize) {
+    TextStyle style = TextStyle(
+      color: const Color(0xff7589a2),
       fontWeight: FontWeight.bold,
-      fontSize: 12,
+      fontSize: fontSize,
     );
     String text = '';
     if (value == 0) {
       text = '1K';
-    } else if (value == 10)
+    } else if (value == 10) {
       text = '5K';
-    else if (value == 19)
+    } else if (value == 19) {
       text = '10K';
-    else
+    } else {
       return Container();
+    }
 
     return SideTitleWidget(
       meta: meta,
@@ -211,7 +229,7 @@ class ChatdiagramState extends State<Chatdiagram> {
     );
   }
 
-  Widget bottomTitles(double value, TitleMeta meta) {
+  Widget bottomTitles(double value, TitleMeta meta, double fontSize) {
     final titles = <String>['Mn', 'Te', 'Wd', 'Tu', 'Fr', 'St', 'Su'];
     if (value.toInt() >= titles.length) return Container();
 
@@ -220,10 +238,10 @@ class ChatdiagramState extends State<Chatdiagram> {
       space: 16,
       child: Text(
         titles[value.toInt()],
-        style: const TextStyle(
-          color: Color(0xff7589a2),
+        style: TextStyle(
+          color: const Color(0xff7589a2),
           fontWeight: FontWeight.bold,
-          fontSize: 14,
+          fontSize: fontSize,
         ),
       ),
     );
@@ -240,20 +258,20 @@ class ChatdiagramState extends State<Chatdiagram> {
     );
   }
 
-  Widget makeTransactionsIcon() {
-    const double barWidth = 4.5;
-    const double barSpace = 3.5;
+  Widget makeTransactionsIcon(bool isDesktop) {
+    final barWidth = isDesktop ? 5.5 : 4.5;
+    final barSpace = isDesktop ? 4.5 : 3.5;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         _iconBar(10, 0.4, barWidth),
-        const SizedBox(width: barSpace),
+        SizedBox(width: barSpace),
         _iconBar(28, 0.8, barWidth),
-        const SizedBox(width: barSpace),
+        SizedBox(width: barSpace),
         _iconBar(42, 1.0, barWidth),
-        const SizedBox(width: barSpace),
+        SizedBox(width: barSpace),
         _iconBar(28, 0.8, barWidth),
-        const SizedBox(width: barSpace),
+        SizedBox(width: barSpace),
         _iconBar(10, 0.4, barWidth),
       ],
     );

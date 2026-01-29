@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ics_frontend/View/login.dart';
+import 'package:ics_frontend/Route/navigator.dart';
 import 'package:window_manager/window_manager.dart';
 
 void main() async {
@@ -13,7 +14,7 @@ void main() async {
     title: "Inventory Control System",
     backgroundColor: Colors.white,
     skipTaskbar: false,
-    titleBarStyle: TitleBarStyle.normal, // 👈 THIS SHOWS BUTTONS
+    titleBarStyle: TitleBarStyle.normal,
   );
 
   windowManager.waitUntilReadyToShow(windowOptions, () async {
@@ -22,7 +23,7 @@ void main() async {
     await windowManager.setMaximizable(true);
 
     await windowManager.show();
-    await windowManager.maximize(); // 👈 FULL SCREEN
+    await windowManager.maximize();
     await windowManager.focus();
   });
 
@@ -34,9 +35,11 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: LoginScreen(),
+      home: const LoginScreen(),
+      onGenerateRoute: AppNavigator.generateRoute,
+      initialRoute: AppNavigator.login,
     );
   }
 }

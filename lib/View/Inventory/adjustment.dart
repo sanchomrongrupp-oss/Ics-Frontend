@@ -36,8 +36,9 @@ class _AdjustmentState extends State<Adjustment> {
 
   // --- Logic Methods ---
   void _addItem() {
-    if (itemController.text.isEmpty || _currentReason == "Select Reason")
+    if (itemController.text.isEmpty || _currentReason == "Select Reason") {
       return;
+    }
     final now = DateTime.now();
 
     setState(() {
@@ -159,141 +160,326 @@ class _AdjustmentState extends State<Adjustment> {
         borderRadius: BorderRadius.circular(16),
         side: BorderSide(color: isDark ? Colors.white10 : Colors.grey.shade300),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          // Removed fixed SizedBox height to allow scrolling
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "Inventory Adjustment",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            ),
-            const Divider(height: 32),
-            Wrap(
-              spacing: 80,
-              runSpacing: 40,
-              children: const [
-                CustomInputField(
-                  label: "Adjust Number",
-                  width: 300,
-                  readOnly: true,
-                ),
-                CustomInputField(
-                  label: "Adjust By",
-                  width: 300,
-                  readOnly: true,
-                ),
-                CustomInputField(
-                  label: "Adjust Date",
-                  width: 300,
-                  readOnly: true,
-                ),
-              ],
-            ),
-            const SizedBox(height: 32),
-            const Text(
-              "Adjustment Items",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            ),
-            const Divider(height: 32),
-            Wrap(
-              spacing: 40,
-              runSpacing: 40,
-              crossAxisAlignment: WrapCrossAlignment.end,
-              children: [
-                CustomInputField(
-                  label: "Item",
-                  width: 300,
-                  controller: itemController,
-                ),
-                CustomInputField(
-                  label: "Qty",
-                  width: 150,
-                  controller: qtyController,
-                ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final isDesktop = constraints.maxWidth >= 1200;
+          final isTablet =
+              constraints.maxWidth >= 800 && constraints.maxWidth < 1200;
+          final isMobile = constraints.maxWidth < 800;
 
-                Builder(
-                  builder: (buttonContext) => GestureDetector(
-                    onTap: () => _toggleDropdown(buttonContext),
-                    child: Container(
-                      height: 40,
-                      width: 250,
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: isDark ? Colors.white38 : Colors.grey.shade400,
-                        ),
-                        color: isDark ? Colors.black26 : Colors.grey[100],
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              _currentReason,
-                              style: const TextStyle(fontSize: 14),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          const Icon(Icons.keyboard_arrow_down, size: 20),
-                        ],
-                      ),
+          // Responsive sizing
+          final titleFontSize = isDesktop ? 18.0 : (isTablet ? 16.0 : 14.0);
+          final padding = isDesktop ? 28.0 : (isTablet ? 20.0 : 16.0);
+          final spacing = isDesktop ? 16.0 : (isTablet ? 12.0 : 8.0);
+          final dividerHeight = isDesktop ? 32.0 : (isTablet ? 24.0 : 20.0);
+          final inputFieldWidth = isDesktop
+              ? 300.0
+              : (isTablet ? 260.0 : 220.0);
+          final inputFieldSpacing = isDesktop ? 80.0 : (isTablet ? 60.0 : 30.0);
+          final inputFieldRowSpacing = isDesktop
+              ? 40.0
+              : (isTablet ? 32.0 : 24.0);
+          final qtyFieldWidth = isDesktop ? 150.0 : (isTablet ? 130.0 : 110.0);
+          final reasonDropdownWidth = isDesktop
+              ? 250.0
+              : (isTablet ? 220.0 : 180.0);
+          final dropdownHeight = isDesktop ? 48.0 : (isTablet ? 44.0 : 40.0);
+          final buttonWidth = isDesktop ? 140.0 : (isTablet ? 120.0 : 100.0);
+          final buttonHeight = isDesktop ? 48.0 : (isTablet ? 44.0 : 40.0);
+          final tableHeight = isDesktop ? 560.0 : (isTablet ? 480.0 : 420.0);
+
+          return Padding(
+            padding: EdgeInsets.all(padding),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Inventory Adjustment",
+                    style: TextStyle(
+                      fontSize: titleFontSize,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                ),
-                CustomButton(
-                  label: "Add Item",
-                  width: 140,
-                  height: 40,
-                  color: Colors.blue,
-                  textcolor: Colors.white,
-                  onTap: _addItem,
-                ),
-                CustomButton(
-                  label: "Delete Item",
-                  width: 140,
-                  height: 40,
-                  color: Colors.red,
-                  textcolor: Colors.white,
-                  onTap: _deleteItem,
-                ),
-                CustomButton(
-                  label: "Update Item",
-                  width: 140,
-                  height: 40,
-                  color: Colors.orange,
-                  textcolor: Colors.white,
-                  onTap: _updateItem,
-                ),
-                CustomButton(
-                  label: "Send PO",
-                  width: 140,
-                  height: 40,
-                  color: Colors.green,
-                  textcolor: Colors.white,
-                  onTap: _done,
-                ),
-              ],
+                  Divider(height: dividerHeight),
+                  isMobile
+                      ? Column(
+                          children: [
+                            CustomInputField(
+                              label: "Adjust Number",
+                              width: double.infinity,
+                              readOnly: true,
+                            ),
+                            SizedBox(height: inputFieldRowSpacing),
+                            CustomInputField(
+                              label: "Adjust By",
+                              width: double.infinity,
+                              readOnly: true,
+                            ),
+                            SizedBox(height: inputFieldRowSpacing),
+                            CustomInputField(
+                              label: "Adjust Date",
+                              width: double.infinity,
+                              readOnly: true,
+                            ),
+                          ],
+                        )
+                      : Wrap(
+                          spacing: inputFieldSpacing,
+                          runSpacing: inputFieldRowSpacing,
+                          children: [
+                            CustomInputField(
+                              label: "Adjust Number",
+                              width: inputFieldWidth,
+                              readOnly: true,
+                            ),
+                            CustomInputField(
+                              label: "Adjust By",
+                              width: inputFieldWidth,
+                              readOnly: true,
+                            ),
+                            CustomInputField(
+                              label: "Adjust Date",
+                              width: inputFieldWidth,
+                              readOnly: true,
+                            ),
+                          ],
+                        ),
+                  SizedBox(height: dividerHeight),
+                  Text(
+                    "Adjustment Items",
+                    style: TextStyle(
+                      fontSize: titleFontSize,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  Divider(height: dividerHeight),
+                  isMobile
+                      ? Column(
+                          children: [
+                            CustomInputField(
+                              label: "Item",
+                              width: double.infinity,
+                              controller: itemController,
+                            ),
+                            SizedBox(height: spacing),
+                            CustomInputField(
+                              label: "Qty",
+                              width: double.infinity,
+                              controller: qtyController,
+                            ),
+                            SizedBox(height: spacing),
+                            Builder(
+                              builder: (buttonContext) => GestureDetector(
+                                onTap: () => _toggleDropdown(buttonContext),
+                                child: Container(
+                                  height: dropdownHeight,
+                                  padding: EdgeInsets.symmetric(horizontal: 12),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(
+                                      color: isDark
+                                          ? Colors.white38
+                                          : Colors.grey.shade400,
+                                    ),
+                                    color: isDark
+                                        ? Colors.black26
+                                        : Colors.grey[100],
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          _currentReason,
+                                          style: TextStyle(
+                                            fontSize: titleFontSize - 2,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      Icon(Icons.keyboard_arrow_down, size: 20),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: spacing),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: CustomButton(
+                                    label: "Add Item",
+                                    width: double.infinity,
+                                    height: buttonHeight,
+                                    color: Colors.blue,
+                                    textcolor: Colors.white,
+                                    onTap: _addItem,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: spacing),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: CustomButton(
+                                    label: "Delete Item",
+                                    width: double.infinity,
+                                    height: buttonHeight,
+                                    color: Colors.red,
+                                    textcolor: Colors.white,
+                                    onTap: _deleteItem,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: spacing),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: CustomButton(
+                                    label: "Update Item",
+                                    width: double.infinity,
+                                    height: buttonHeight,
+                                    color: Colors.orange,
+                                    textcolor: Colors.white,
+                                    onTap: _updateItem,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: spacing),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: CustomButton(
+                                    label: "Send PO",
+                                    width: double.infinity,
+                                    height: buttonHeight,
+                                    color: Colors.green,
+                                    textcolor: Colors.white,
+                                    onTap: _done,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        )
+                      : Wrap(
+                          spacing: spacing,
+                          runSpacing: spacing,
+                          crossAxisAlignment: WrapCrossAlignment.end,
+                          children: [
+                            CustomInputField(
+                              label: "Item",
+                              width: inputFieldWidth,
+                              controller: itemController,
+                            ),
+                            CustomInputField(
+                              label: "Qty",
+                              width: qtyFieldWidth,
+                              controller: qtyController,
+                            ),
+                            Builder(
+                              builder: (buttonContext) => GestureDetector(
+                                onTap: () => _toggleDropdown(buttonContext),
+                                child: Container(
+                                  height: dropdownHeight,
+                                  width: reasonDropdownWidth,
+                                  padding: EdgeInsets.symmetric(horizontal: 12),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(
+                                      color: isDark
+                                          ? Colors.white38
+                                          : Colors.grey.shade400,
+                                    ),
+                                    color: isDark
+                                        ? Colors.black26
+                                        : Colors.grey[100],
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          _currentReason,
+                                          style: TextStyle(
+                                            fontSize: titleFontSize - 2,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      Icon(Icons.keyboard_arrow_down, size: 20),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            CustomButton(
+                              label: "Add Item",
+                              width: buttonWidth,
+                              height: buttonHeight,
+                              color: Colors.blue,
+                              textcolor: Colors.white,
+                              onTap: _addItem,
+                            ),
+                            CustomButton(
+                              label: "Delete Item",
+                              width: buttonWidth,
+                              height: buttonHeight,
+                              color: Colors.red,
+                              textcolor: Colors.white,
+                              onTap: _deleteItem,
+                            ),
+                            CustomButton(
+                              label: "Update Item",
+                              width: buttonWidth,
+                              height: buttonHeight,
+                              color: Colors.orange,
+                              textcolor: Colors.white,
+                              onTap: _updateItem,
+                            ),
+                            CustomButton(
+                              label: "Send PO",
+                              width: buttonWidth,
+                              height: buttonHeight,
+                              color: Colors.green,
+                              textcolor: Colors.white,
+                              onTap: _done,
+                            ),
+                          ],
+                        ),
+                  SizedBox(height: spacing * 2),
+                  // Table Integrated Here
+                  SizedBox(
+                    height: tableHeight,
+                    width: double.infinity,
+                    child: _datatableItems(isDesktop, isTablet),
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(height: 24),
-            // Table Integrated Here
-            SizedBox(
-              height: 529,
-              width: double.infinity,
-              child: _datatableItems(),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
 
-  Widget _datatableItems() {
+  Widget _datatableItems(bool isDesktop, bool isTablet) {
     return LayoutBuilder(
       builder: (context, constraints) {
         final isDark = Theme.of(context).brightness == Brightness.dark;
+
+        // Responsive table sizing
+        final headingRowHeight = isDesktop ? 52.0 : (isTablet ? 48.0 : 44.0);
+        final dataRowHeight = isDesktop ? 50.0 : (isTablet ? 46.0 : 42.0);
+        final columnSpacing = isDesktop ? 40.0 : (isTablet ? 28.0 : 16.0);
+        final horizontalMargin = isDesktop ? 20.0 : (isTablet ? 16.0 : 12.0);
+        final columnFontSize = isDesktop ? 14.0 : (isTablet ? 12.0 : 11.0);
 
         return SingleChildScrollView(
           scrollDirection: Axis.vertical,
@@ -303,19 +489,54 @@ class _AdjustmentState extends State<Adjustment> {
               constraints: BoxConstraints(minWidth: constraints.maxWidth),
               child: DataTableTheme(
                 data: DataTableThemeData(
+                  dividerThickness: 1,
                   headingRowColor: WidgetStateProperty.all(
                     isDark ? Colors.grey.shade900 : Colors.blue[300],
                   ),
+                  horizontalMargin: horizontalMargin,
+                  columnSpacing: columnSpacing,
                 ),
                 child: DataTable(
                   showCheckboxColumn: false,
-                  columns: const [
-                    DataColumn(label: Text("No")),
-                    DataColumn(label: Text("Item")),
-                    DataColumn(label: Text("Name")),
-                    DataColumn(label: Text("Qty")),
-                    DataColumn(label: Text("Reason")),
-                    DataColumn(label: Text("Adjust Date")),
+                  headingRowHeight: headingRowHeight,
+                  dataRowHeight: dataRowHeight,
+                  columns: [
+                    DataColumn(
+                      label: Text(
+                        "No",
+                        style: TextStyle(fontSize: columnFontSize),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        "Item",
+                        style: TextStyle(fontSize: columnFontSize),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        "Name",
+                        style: TextStyle(fontSize: columnFontSize),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        "Qty",
+                        style: TextStyle(fontSize: columnFontSize),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        "Reason",
+                        style: TextStyle(fontSize: columnFontSize),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        "Adjust Date",
+                        style: TextStyle(fontSize: columnFontSize),
+                      ),
+                    ),
                   ],
                   rows: orderItems.asMap().entries.map((entry) {
                     int index = entry.key;
@@ -332,12 +553,42 @@ class _AdjustmentState extends State<Adjustment> {
                         });
                       },
                       cells: [
-                        DataCell(Text(row["no"].toString())),
-                        DataCell(Text(row["item"])),
-                        DataCell(Text(row["name"])),
-                        DataCell(Text(row["qty"].toString())),
-                        DataCell(Text(row["reason"])),
-                        DataCell(Text(row["adjust_date"])),
+                        DataCell(
+                          Text(
+                            row["no"].toString(),
+                            style: TextStyle(fontSize: columnFontSize),
+                          ),
+                        ),
+                        DataCell(
+                          Text(
+                            row["item"],
+                            style: TextStyle(fontSize: columnFontSize),
+                          ),
+                        ),
+                        DataCell(
+                          Text(
+                            row["name"],
+                            style: TextStyle(fontSize: columnFontSize),
+                          ),
+                        ),
+                        DataCell(
+                          Text(
+                            row["qty"].toString(),
+                            style: TextStyle(fontSize: columnFontSize),
+                          ),
+                        ),
+                        DataCell(
+                          Text(
+                            row["reason"],
+                            style: TextStyle(fontSize: columnFontSize),
+                          ),
+                        ),
+                        DataCell(
+                          Text(
+                            row["adjust_date"],
+                            style: TextStyle(fontSize: columnFontSize),
+                          ),
+                        ),
                       ],
                     );
                   }).toList(),
