@@ -12,6 +12,7 @@ import 'package:ics_frontend/View/Inventory/purchaseoders.dart';
 import 'package:ics_frontend/View/Inventory/adjustment.dart';
 import 'package:ics_frontend/View/Build/office.dart';
 import 'package:ics_frontend/View/Notification/notification.dart';
+import 'package:ics_frontend/View/report/report.dart';
 
 class AppNavigator {
   // Route names (constants)
@@ -29,6 +30,7 @@ class AppNavigator {
   static const String office = '/office';
   static const String notification = '/notification';
   static const String messages = '/messages';
+  static const String report = '/report';
 
   // Generate routes
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -61,6 +63,12 @@ class AppNavigator {
         return MaterialPageRoute(
           builder: (_) => const SettingScreen(),
           settings: const RouteSettings(name: setting),
+        );
+
+      case report:
+        return MaterialPageRoute(
+          builder: (_) => const Report(),
+          settings: const RouteSettings(name: report),
         );
 
       case customer:
@@ -175,4 +183,7 @@ class AppNavigator {
   // Pop until specific route
   static void popUntil(BuildContext context, String routeName) =>
       Navigator.popUntil(context, ModalRoute.withName(routeName));
+
+  static Future<void> navigateToReport(BuildContext context) =>
+      Navigator.pushNamed(context, report);
 }

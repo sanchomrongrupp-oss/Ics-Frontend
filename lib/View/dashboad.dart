@@ -12,6 +12,7 @@ import 'package:ics_frontend/View/Notification/notification.dart';
 import 'package:ics_frontend/View/Profile/profile.dart';
 import 'package:ics_frontend/View/Sale/sales.dart';
 import 'package:ics_frontend/View/Setting/setting.dart';
+import 'package:ics_frontend/View/report/report.dart';
 
 // Note: Ensure your assets are defined in pubspec.yaml
 // and your imports for DashContent and CustomLightModeSwitch are correct.
@@ -282,6 +283,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           });
                         },
                       ),
+
+                      SizedBox(height: itemHeight),
+                      _navTile(
+                        iconPath: 'icons/report.png',
+                        title: 'Report',
+                        onTap: () {
+                          setState(() {
+                            _currentContent = const Report();
+                          });
+                        },
+                      ),
+
                       SizedBox(height: itemHeight),
                       _navTile(
                         iconPath: 'icons/settings.png',
